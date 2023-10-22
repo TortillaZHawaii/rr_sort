@@ -8,6 +8,10 @@ cc_library(
         "benchmark/benchmark_result.h",
         "benchmark/sort_benchmark.h",
     ],
-    copts = ["-std=c++20"],
+    copts = [
+        "-std=c++20",
+        "-pthread",
+        "-O3",
+    ],
     visibility = ["//visibility:public"],
 )
