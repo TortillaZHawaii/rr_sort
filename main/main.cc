@@ -1,5 +1,6 @@
 #include "../single_cpu/merge_sort.h"
-#include "../utils/benchmark/benchmark.h"
+#include "../utils/benchmark/sort_benchmark.h"
+#include <algorithm>
 #include <iostream>
 
 int main() {
@@ -8,25 +9,16 @@ int main() {
                                       "a",     "test",  "of",       "the",
                                       "merge", "sort",  "algorithm"};
 
-  std::vector<std::string> data_copy = data;
+  const std::vector<std::string> correct{"a",     "algorithm", "hello", "is",
+                                         "merge", "of",        "sort",  "test",
+                                         "the",   "this",      "world"};
 
-  rr::single_cpu::merge_sort(data_copy.begin(), data_copy.end());
+  auto result =
+      rr::utils::SortBenchmark("test_data", "single_cpu::merge_sort",
+                               rr::single_cpu::merge_sort, data, correct, 1000)
+          .run();
 
-  // auto result =
-  //     rr::utils::Benchmark(
-  //         "Small data", "single_cpu::merge_sort",
-  //         [&]() {
-  //           rr::single_cpu::merge_sort(data_copy.begin(), data_copy.end());
-  //         },
-  //         10)
-  //         .run();
-
-  // std::cout << result.to_string() << std::endl;
-
-  for (const auto &s : data_copy) {
-    std::cout << s << " ";
-  }
-  std::cout << std::endl;
+  std::cout << result.to_string() << std::endl;
 
   return 0;
 }

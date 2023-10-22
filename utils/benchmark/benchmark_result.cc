@@ -6,7 +6,12 @@ std::string BenchmarkResult::to_string() const {
   std::string result = "Benchmark result:\n";
   result += "Data name: " + data_name + "\n";
   result += "Algorithm name: " + algorithm_name + "\n";
-  result += "Number of runs: " + std::to_string(number_of_runs) + "\n";
+  result += "Correct runs: " + std::to_string(number_of_correct_runs) +
+            " out of " + std::to_string(number_of_runs) + "\n";
+  result +=
+      "Is correct: " +
+      std::string(number_of_correct_runs == number_of_runs ? "yes" : "no") +
+      "\n";
   result += "Max time: " + std::to_string(max_time_ns) + " ns\n";
   result += "Average time: " + std::to_string(average_time_ns) + " ns\n";
   result +=

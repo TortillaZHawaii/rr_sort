@@ -1,13 +1,13 @@
 cc_library(
     name = "utils",
     srcs = [
-        "benchmark/benchmark.cc",
         "benchmark/benchmark_result.cc",
+        "benchmark/sort_benchmark.cc",
     ],
     hdrs = [
-        "benchmark/benchmark.h",
         "benchmark/benchmark_result.h",
+        "benchmark/sort_benchmark.h",
     ],
-    visibility = ["//visibility:public"],
     copts = ["-std=c++20"],
+    visibility = ["//visibility:public"],
 )
