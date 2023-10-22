@@ -3,7 +3,12 @@
 #include <thread>
 
 namespace rr::parallel_cpu {
-constexpr int kMinParallelSize = 16;
+// this is the minimum size of the vector to be sorted in parallel
+//
+// smaller vectors are sorted in a single thread
+//
+// this is a tradeoff between the overhead of creating a new thread
+constexpr int kMinParallelSize = 2048;
 
 void parallel_merge_sort(std::vector<std::string>::iterator begin,
                          std::vector<std::string>::iterator end) {
