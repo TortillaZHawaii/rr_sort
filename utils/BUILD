@@ -9,4 +9,5 @@ cc_library(
         "benchmark/benchmark_result.h",
     ],
     visibility = ["//visibility:public"],
+    copts = ["-std=c++20"],
 )
