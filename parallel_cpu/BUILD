@@ -1,0 +1,8 @@
+cc_library(
+    name = "parallel_cpu",
+    srcs = ["parallel_merge_sort.cc"],
+    hdrs = ["parallel_merge_sort.h"],
+    copts = ["-std=c++20"],
+    visibility = ["//visibility:public"],
+    deps = ["//single_cpu"],
+)

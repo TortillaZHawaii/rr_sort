@@ -1,3 +1,4 @@
+#include "../parallel_cpu/parallel_merge_sort.h"
 #include "../single_cpu/merge_sort.h"
 #include "../utils/benchmark/sort_benchmark.h"
 #include <algorithm>
@@ -19,6 +20,14 @@ int main() {
           .run();
 
   std::cout << result.to_string() << std::endl;
+
+  auto result_paralllel =
+      rr::utils::SortBenchmark("test_data", "parallel_cpu::parallel_merge_sort",
+                               rr::parallel_cpu::parallel_merge_sort, data,
+                               correct, 1000)
+          .run();
+
+  std::cout << result_paralllel.to_string() << std::endl;
 
   return 0;
 }

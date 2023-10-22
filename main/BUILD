@@ -1,6 +1,10 @@
 cc_binary(
     name = "main",
     srcs = ["main.cc"],
-    deps = ["//utils", "//single_cpu"],
     copts = ["-std=c++20"],
+    deps = [
+        "//parallel_cpu",
+        "//single_cpu",
+        "//utils",
+    ],
 )
