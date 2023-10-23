@@ -3,6 +3,7 @@ cc_binary(
     srcs = ["main.cc"],
     copts = [
         "-std=c++20",
+        "-ggdb3",
         "-pthread",
         "-O3",
     ],

@@ -2,6 +2,7 @@
 #include "../single_cpu/merge_sort.h"
 #include "../utils/benchmark/sort_benchmark.h"
 #include <algorithm>
+// #include <execution>
 #include <functional>
 #include <iostream>
 
@@ -46,6 +47,12 @@ int main() {
       SortAlgorithm("single_cpu::merge_sort", rr::single_cpu::merge_sort),
       SortAlgorithm("parallel_cpu::parallel_merge_sort",
                     rr::parallel_cpu::parallel_merge_sort),
+      SortAlgorithm("std::sort",
+                    [](auto begin, auto end) { std::sort(begin, end); }),
+      // SortAlgorithm("std::sort parallel mode",
+      //               [](auto begin, auto end) {
+      //                 std::sort(std::execution::par_seq, begin, end);
+      //               }),
   };
 
   for (const auto &data : test_data) {
