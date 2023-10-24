@@ -1,3 +1,4 @@
+#include "../parallel_cpu/parallel_intro_sort.h"
 #include "../parallel_cpu/parallel_merge_sort.h"
 #include "../single_cpu/insertion_sort.h"
 #include "../single_cpu/intro_sort.h"
@@ -42,7 +43,7 @@ int main() {
 
   auto test_data = std::vector<TestData>{
       TestData("short", data, correct, 1000),
-      TestData("long", long_repeated, long_repeated, 10),
+      TestData("long", long_repeated, long_repeated, 100),
   };
 
   auto test_algorithms = std::vector<SortAlgorithm>{
@@ -54,6 +55,8 @@ int main() {
       SortAlgorithm("single_cpu::insertion_sort",
                     rr::single_cpu::insertion_sort),
       SortAlgorithm("single_cpu::intro_sort", rr::single_cpu::intro_sort),
+      SortAlgorithm("parallel_cpu::parallel_intro_sort",
+                    rr::parallel_cpu::parallel_intro_sort),
       // SortAlgorithm("std::sort parallel mode",
       //               [](auto begin, auto end) {
       //                 std::sort(std::execution::par_seq, begin, end);
