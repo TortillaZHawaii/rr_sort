@@ -37,5 +37,21 @@ public:
   std::string to_string() const;
 
   operator std::string() const { return to_string(); }
+
+  friend std::ostream &operator<<(std::ostream &os,
+                                  const BenchmarkResult &result) {
+    os << result.to_string();
+    return os;
+  }
+
+  friend std::ostream &operator<<(std::ostream &os,
+                                  const BenchmarkResult *result) {
+    os << result->to_string();
+    return os;
+  }
+
+  std::string to_csv() const;
+
+  static std::string csv_header();
 };
 } // namespace rr::utils

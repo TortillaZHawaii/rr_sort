@@ -8,6 +8,7 @@
 // #include <execution>
 #include <functional>
 #include <iostream>
+#include <sstream>
 
 struct TestData {
   const std::string name;
@@ -43,7 +44,7 @@ int main() {
 
   auto test_data = std::vector<TestData>{
       TestData("short", data, correct, 1000),
-      TestData("long", long_repeated, long_repeated, 100),
+      TestData("long_repeated", long_repeated, long_repeated, 100),
   };
 
   auto test_algorithms = std::vector<SortAlgorithm>{
@@ -63,6 +64,9 @@ int main() {
       //               }),
   };
 
+  std::stringstream csv;
+  csv << rr::utils::BenchmarkResult::csv_header() << std::endl;
+
   for (const auto &data : test_data) {
     for (const auto &algo : test_algorithms) {
       std::cout << "Running " << algo.name << " on " << data.name << std::endl;
@@ -70,9 +74,12 @@ int main() {
           rr::utils::SortBenchmark(data.name, algo.name, algo.sort_function,
                                    data.data, data.correct, data.iterations)
               .run();
-      std::cout << result.to_string() << std::endl;
+      std::cout << result << std::endl;
+      csv << result.to_csv() << std::endl;
     }
   }
+
+  std::cout << csv.str() << std::endl;
 
   return 0;
 }

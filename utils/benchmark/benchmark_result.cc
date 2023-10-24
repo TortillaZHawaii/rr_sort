@@ -21,4 +21,18 @@ std::string BenchmarkResult::to_string() const {
   return result;
 }
 
+std::string BenchmarkResult::to_csv() const {
+  std::string result =
+      data_name + "," + algorithm_name + "," + std::to_string(number_of_runs) +
+      "," + std::to_string(number_of_correct_runs) + "," +
+      std::to_string(min_time_ns) + "," + std::to_string(max_time_ns) + "," +
+      std::to_string(standard_deviation_ns) + "," +
+      std::to_string(average_time_ns);
+  return result;
+}
+
+std::string BenchmarkResult::csv_header() {
+  return "data_name,algorithm_name,number_of_runs,number_of_correct_runs,"
+         "min_time_ns,max_time_ns,standard_deviation_ns,average_time_ns";
+}
 } // namespace rr::utils
