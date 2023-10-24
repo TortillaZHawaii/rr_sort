@@ -1,4 +1,6 @@
 #include "../parallel_cpu/parallel_merge_sort.h"
+#include "../single_cpu/insertion_sort.h"
+#include "../single_cpu/intro_sort.h"
 #include "../single_cpu/merge_sort.h"
 #include "../utils/benchmark/sort_benchmark.h"
 #include <algorithm>
@@ -49,6 +51,9 @@ int main() {
                     rr::parallel_cpu::parallel_merge_sort),
       SortAlgorithm("std::sort",
                     [](auto begin, auto end) { std::sort(begin, end); }),
+      SortAlgorithm("single_cpu::insertion_sort",
+                    rr::single_cpu::insertion_sort),
+      SortAlgorithm("single_cpu::intro_sort", rr::single_cpu::intro_sort),
       // SortAlgorithm("std::sort parallel mode",
       //               [](auto begin, auto end) {
       //                 std::sort(std::execution::par_seq, begin, end);
