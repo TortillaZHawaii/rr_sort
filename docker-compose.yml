@@ -1,4 +1,6 @@
 # NO SPARK
+# maybe obsolete, but kept for now to demostrate basic hadoop cluster
+# for better version refert to 'paralell_with_shared_memory'
 
 version: "3"
 services:
