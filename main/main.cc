@@ -5,11 +5,15 @@
 #include "../single_cpu/intro_sort.h"
 #include "../single_cpu/merge_sort.h"
 #include "../utils/benchmark/sort_benchmark.h"
+#include "../utils/data/reader.h"
 #include <algorithm>
 // #include <execution>
+#include <filesystem>
 #include <functional>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 struct TestData {
   const std::string name;
@@ -32,7 +36,7 @@ struct SortAlgorithm {
       : name(name), sort_function(sort_function) {}
 };
 
-int main() {
+int main(int argc, char **argv) {
   const std::vector<std::string> data{"hello", "world", "this",     "is",
                                       "a",     "test",  "of",       "the",
                                       "merge", "sort",  "algorithm"};
@@ -48,15 +52,21 @@ int main() {
       TestData("long_repeated", long_repeated, long_repeated, 100),
   };
 
+  for (int i = 1; i < argc; ++i) {
+    std::cout << "Reading " << argv[i] << std::endl;
+    auto data = rr::utils::data::DataReader(argv[i]).read_data();
+    test_data.push_back(TestData(argv[i], data.first, data.second, 10));
+  }
+
   auto test_algorithms = std::vector<SortAlgorithm>{
       SortAlgorithm("single_cpu::merge_sort", rr::single_cpu::merge_sort),
       SortAlgorithm("parallel_cpu::parallel_merge_sort",
                     rr::parallel_cpu::parallel_merge_sort),
       SortAlgorithm("std::sort",
                     [](auto begin, auto end) { std::sort(begin, end); }),
-      SortAlgorithm("single_cpu::insertion_sort",
-                    rr::single_cpu::insertion_sort),
-      SortAlgorithm("single_cpu::intro_sort", rr::single_cpu::intro_sort),
+      // SortAlgorithm("single_cpu::insertion_sort",
+      //               rr::single_cpu::insertion_sort),
+      // SortAlgorithm("single_cpu::intro_sort", rr::single_cpu::intro_sort),
       SortAlgorithm("parallel_cpu::parallel_intro_sort",
                     rr::parallel_cpu::parallel_intro_sort),
       SortAlgorithm("gpu_cuda::enumeration_sort",
