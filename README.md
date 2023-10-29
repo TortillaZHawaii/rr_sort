@@ -1,5 +1,11 @@
 # TODO
+* zrobić docker compose
+* dodać maven do podstawowego obrazu
+* zapisywanie .m2 do kontenera??
+
+## Problems
 * w defaultowym koneterze nie jest podłączony spark
+* gdzie jest ścieżka do hdfs?
 
 ## Notes
 * hadoop składa się z yarn, dfs, map-reduce
