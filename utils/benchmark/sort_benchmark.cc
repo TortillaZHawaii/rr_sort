@@ -9,10 +9,13 @@ namespace rr::utils {
 bool is_correct(const std::vector<std::string> data,
                 const std::vector<std::string> correct) {
   if (data.size() != correct.size()) {
+    std::cerr << "Data size is not correct\n" << std::endl;
     return false;
   }
   for (size_t i = 0; i < data.size(); ++i) {
     if (data[i] != correct[i]) {
+      std::cerr << "Data is not correct at " << i << " " << data[i]
+                << " != " << correct[i] << std::endl;
       return false;
     }
   }

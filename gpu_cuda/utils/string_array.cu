@@ -22,8 +22,8 @@ string_array to_device_string_array(std::vector<std::string>::iterator begin,
                                     std::vector<std::string>::iterator end) {
   size_t size = std::distance(begin, end);
 
-  std::vector<int> lengths(size);
-  std::vector<int> offsets(size);
+  std::vector<size_t> lengths(size);
+  std::vector<size_t> offsets(size);
   size_t max_length = 0;
   size_t total_length = 0;
 

@@ -1,11 +1,38 @@
 #include "enumeration_sort.cuh"
+#include "utils/panic.cuh"
 #include "utils/string_array.cuh"
+#include <cstddef>
+#include <iostream>
+#include <memory>
 
 namespace rr::gpu_cuda {
 using namespace rr::gpu_cuda::utils;
 
+__device__ int compare_strings(const char *str1, const char *str2,
+                               size_t length1, size_t length2) {
+  int cmp = 0;
+  for (int i = 0; i < length1 && i < length2; ++i) {
+    if (str1[i] < str2[i]) {
+      cmp = -1;
+      break;
+    } else if (str1[i] > str2[i]) {
+      cmp = 1;
+      break;
+    }
+  }
+
+  if (cmp == 0) {
+    if (length1 < length2)
+      cmp = -1;
+    else if (length1 > length2)
+      cmp = 1;
+  }
+
+  return cmp;
+}
+
 __global__ void enumeration_sort_kernel(string_array input,
-                                        string_array result) {
+                                        size_t *result_positions) {
   auto tid = threadIdx.x + blockIdx.x * blockDim.x;
   if (tid >= input.size)
     return;
@@ -13,7 +40,7 @@ __global__ void enumeration_sort_kernel(string_array input,
   size_t length = input.lengths[tid];
   size_t offset = input.offsets[tid];
 
-  int rank = 0;
+  size_t rank = 0;
 
   for (int i = 0; i < input.size; ++i) {
     if (i == tid)
@@ -22,26 +49,44 @@ __global__ void enumeration_sort_kernel(string_array input,
     size_t other_length = input.lengths[i];
     size_t other_offset = input.offsets[i];
 
-    // compare strings
-    int cmp = 0;
+    int cmp = compare_strings(input.data + offset, input.data + other_offset,
+                              length, other_length);
+
+    if (cmp > 0 || (cmp == 0 && tid > i)) {
+      ++rank;
+    }
   }
+
+  // update result
+  result_positions[tid] = rank;
 }
 
 void enumeration_sort(std::vector<std::string>::iterator begin,
                       std::vector<std::string>::iterator end) {
   auto d_arr = to_device_string_array(begin, end);
-  auto d_res =
-      create_string_array(d_arr.size, d_arr.max_length, d_arr.max_length);
-
-  const uint grid_size = 1024;
+  size_t *d_res;
+  checkCudaErrors(cudaMalloc(&d_res, d_arr.size * sizeof(size_t)));
+  const uint grid_size = 512;
   const uint block_size =
-      d_arr.size / grid_size + (d_arr.size % grid_size) ? 1 : 0;
+      d_arr.size / grid_size + ((d_arr.size % grid_size) ? 1 : 0);
 
   enumeration_sort_kernel<<<grid_size, block_size>>>(d_arr, d_res);
+  checkCudaErrors(cudaPeekAtLastError());
 
-  copy_string_array_to_vector(d_res, begin, end);
+  auto res = std::make_unique<size_t[]>(d_arr.size);
+  checkCudaErrors(cudaMemcpy(res.get(), d_res, d_arr.size * sizeof(size_t),
+                             cudaMemcpyDeviceToHost));
 
+  std::vector<std::string> sorted(d_arr.size);
+  for (int i = 0; i < d_arr.size; ++i) {
+    sorted[res[i]] = *(begin + i);
+  }
+
+  for (int i = 0; i < d_arr.size; ++i) {
+    *(begin + i) = std::move(sorted[i]);
+  }
+
+  checkCudaErrors(cudaFree(d_res));
   free_string_array(d_arr);
-  free_string_array(d_res);
 }
 } // namespace rr::gpu_cuda
