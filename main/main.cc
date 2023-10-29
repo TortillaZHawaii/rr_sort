@@ -1,3 +1,4 @@
+#include "../gpu_cuda/enumeration_sort.cuh"
 #include "../parallel_cpu/parallel_intro_sort.h"
 #include "../parallel_cpu/parallel_merge_sort.h"
 #include "../single_cpu/insertion_sort.h"
@@ -58,6 +59,8 @@ int main() {
       SortAlgorithm("single_cpu::intro_sort", rr::single_cpu::intro_sort),
       SortAlgorithm("parallel_cpu::parallel_intro_sort",
                     rr::parallel_cpu::parallel_intro_sort),
+      SortAlgorithm("gpu_cuda::enumeration_sort",
+                    rr::gpu_cuda::enumeration_sort),
       // SortAlgorithm("std::sort parallel mode",
       //               [](auto begin, auto end) {
       //                 std::sort(std::execution::par_seq, begin, end);

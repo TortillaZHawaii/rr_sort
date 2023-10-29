@@ -8,6 +8,7 @@ cc_binary(
         "-O3",
     ],
     deps = [
+        "//gpu_cuda",
         "//parallel_cpu",
         "//single_cpu",
         "//utils",
