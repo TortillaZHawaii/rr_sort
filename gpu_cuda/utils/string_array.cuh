@@ -26,6 +26,8 @@ struct string_array {
   size_t *offsets;
   size_t *lengths;
 };
+string_array create_string_array(size_t size, size_t total_length,
+                                 size_t max_length);
 
 string_array to_device_string_array(std::vector<std::string>::iterator begin,
                                     std::vector<std::string>::iterator end);
