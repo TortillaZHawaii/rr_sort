@@ -66,11 +66,14 @@ void enumeration_sort(std::vector<std::string>::iterator begin,
   auto d_arr = to_device_string_array(begin, end);
   size_t *d_res;
   checkCudaErrors(cudaMalloc(&d_res, d_arr.size * sizeof(size_t)));
-  const uint grid_size = 512;
-  const uint block_size =
-      d_arr.size / grid_size + ((d_arr.size % grid_size) ? 1 : 0);
-
-  enumeration_sort_kernel<<<grid_size, block_size>>>(d_arr, d_res);
+  // For some reason, lower grid count per block cannot be run on my machine on
+  // bible.txt. 1024 is also max number for any CUDA device.
+  //
+  // https://stackoverflow.com/questions/6048907/maximum-blocks-per-gridcuda
+  const uint grid_count_per_block = 1024;
+  const uint block_count = d_arr.size / grid_count_per_block +
+                           ((d_arr.size % grid_count_per_block) ? 1 : 0);
+  enumeration_sort_kernel<<<grid_count_per_block, block_count>>>(d_arr, d_res);
   checkCudaErrors(cudaPeekAtLastError());
 
   auto res = std::make_unique<size_t[]>(d_arr.size);
