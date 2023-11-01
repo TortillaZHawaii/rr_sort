@@ -1,6 +1,7 @@
 #include "../gpu_cuda/enumeration_sort.cuh"
 #include "../parallel_cpu/parallel_intro_sort.h"
 #include "../parallel_cpu/parallel_merge_sort.h"
+#include "../parallel_cpu/parallel_merge_sort_openmp.h"
 #include "../single_cpu/insertion_sort.h"
 #include "../single_cpu/intro_sort.h"
 #include "../single_cpu/merge_sort.h"
@@ -62,6 +63,8 @@ int main(int argc, char **argv) {
       SortAlgorithm("single_cpu::merge_sort", rr::single_cpu::merge_sort),
       SortAlgorithm("parallel_cpu::parallel_merge_sort",
                     rr::parallel_cpu::parallel_merge_sort),
+      SortAlgorithm("parallel_cpu::parallel_merge_sort_openmp",
+                    rr::parallel_cpu::parallel_merge_sort_openmp),
       SortAlgorithm("std::sort",
                     [](auto begin, auto end) { std::sort(begin, end); }),
       // SortAlgorithm("single_cpu::insertion_sort",
@@ -70,7 +73,7 @@ int main(int argc, char **argv) {
       SortAlgorithm("parallel_cpu::parallel_intro_sort",
                     rr::parallel_cpu::parallel_intro_sort),
       SortAlgorithm("gpu_cuda::enumeration_sort",
-                    rr::gpu_cuda::enumeration_sort),
+                   rr::gpu_cuda::enumeration_sort),
       // SortAlgorithm("std::sort parallel mode",
       //               [](auto begin, auto end) {
       //                 std::sort(std::execution::par_seq, begin, end);
