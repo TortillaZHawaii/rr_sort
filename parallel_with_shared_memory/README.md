@@ -40,13 +40,24 @@ Wynik wypisze się na konsoli a sam status pracy dostępny pod [adresem](http://
      
    - Wersja sekwencyjna
    
-   Przykład komendy gdy znajdujemy się w katalogu target: ```java -jar Spark_Sort-1.0-SNAPSHOT.jar ../input.txt output.txt java```
+   Przykład komendy gdy znajdujemy się w katalogu target:
+   ```sh
+   java -jar Spark_Sort-1.0-SNAPSHOT.jar ../input.txt output.txt java
+   ```
      
    - Wersja równoległa
 
-   Przykład komendy gdy znajdujemy się w katalogu głównym projektu: ```$SPARK_HOME/bin/spark-submit --class com.example.App --master yarn target/Spark_Sort-1.0-SNAPSHOT.jar hdfs:///input.txt hdfs:///output.txt spark``` gdzie
+   Przykład komendy gdy znajdujemy się w katalogu głównym projektu:
+   ```sh
+   $SPARK_HOME/bin/spark-submit --class com.example.App --master yarn target/Spark_Sort-1.0-SNAPSHOT.jar hdfs:///input.txt hdfs:///output.txt spark
+   ```
+   , gdzie
    ```hdfs:///input.txt``` oznacza ścieżkę ```/input.txt``` na hdfs'ie.
 
-   Aktualnie input.txt nie znajduje się na hdfs a jedynie w naszym projekcie lokalnym. Aby wrzucić go na hdfs możemy użyć komendy: ```hadoop fs -put input.txt /```. (TIP: Do hdfs'a można odwoływać się jak do zwykłego systemu plików w linuxie przykłady: ```hadoop fs -ls /``` (Wyświetli ls w katalogu / na hdfs'ie)).
+   Aktualnie input.txt nie znajduje się na hdfs a jedynie w naszym projekcie lokalnym. Aby wrzucić go na hdfs możemy użyć komendy:
+   ```sh
+   hadoop fs -put input.txt /
+   ```
+   TIP: Do hdfs'a można odwoływać się jak do zwykłego systemu plików w linuxie przykłady: ```hadoop fs -ls /``` (Wyświetli ls w katalogu / na hdfs'ie).
 
-   Ważne info: po uruchomieniu projektu w wersji równoległej wyniki czyli input.txt na hdfs będzie katalogiem w skład którego będą wchodziły "bloki". Chodzi o to, że HDFS u swojego powstania zakłada podział na bloki po max. 128 MB każdy. Czyli prawdopodobnie posorotwany tesks znajduje się na hdfs'ie pod ścieżką: ```/output.txt/part-00000```. Jeśli chcesz wypisać go na konsoli możesz wykorzystać polecenie: ```hadoop fs -cat /output.txt/part-00000```.
+   INFO: Po uruchomieniu projektu w wersji równoległej wyniki czyli input.txt na hdfs będzie katalogiem w skład którego będą wchodziły "bloki". Chodzi o to, że HDFS u swojego powstania zakłada podział na bloki po max. 128 MB każdy. Czyli prawdopodobnie posorotwany tesks znajduje się na hdfs'ie pod ścieżką: ```/output.txt/part-00000```. Jeśli chcesz wypisać go na konsoli możesz wykorzystać polecenie: ```hadoop fs -cat /output.txt/part-00000```.
