@@ -20,6 +20,11 @@
             <artifactId>spark-core_2.11</artifactId>
             <version>2.4.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.12</artifactId> <!-- Wybierz odpowiednią wersję Sparka -->
+            <version>3.1.2</version> <!-- Wybierz odpowiednią wersję Sparka -->
+        </dependency>
     </dependencies>
 
     <!-- Add the build section with maven-compiler-plugin -->
@@ -30,8 +35,21 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.example.App</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>

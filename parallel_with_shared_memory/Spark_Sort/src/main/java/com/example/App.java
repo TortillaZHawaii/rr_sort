@@ -1,38 +1,32 @@
 package com.example;
 
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.Function;
-
-import java.util.ArrayList; 
-import java.util.Collections; 
-import java.util.List; 
+import java.util.Objects;
 
 public class App {
+
     public static void main(String[] args) {
-        // Konfiguracja Sparka
-        SparkConf conf = new SparkConf().setAppName("JavaSparkHadoopMergesort");
-        JavaSparkContext sc = new JavaSparkContext(conf);
+        validArgs(args);
+        MySortFactory factory = new MySortFactory();
+        MySort mySort = factory.createMySort(args[2]);
+        mySort.sort(args[0], args[1]);
+    }
 
-        String inputFile = "hdfs://input.txt";
-        String outputFile = "hdfs://output.txt";
+    private static void validArgs(String[] args) {
+        validNumberOfArgs(args);
+        validSelectedAlgorithm(args);
+    }
 
-        // Wczytanie danych z pliku
-        JavaRDD<String> data = sc.textFile(inputFile);
+    private static void validNumberOfArgs(String[] args) {
+        if (args.length != 3) {
+            System.err.println("Usage: SortWords <inputPath> <outputPath> <algorithm>");
+            System.exit(1);
+        }
+    }
 
-        JavaRDD<String> sortedData = data.mapPartitions(iter -> {
-            List<String> dataList = new ArrayList<>();
-            while (iter.hasNext()) {
-                dataList.add(iter.next());
-            }
-            Collections.sort(dataList);
-            return dataList.iterator();
-        });
-
-        // Zapis posortowanych danych do pliku
-        sortedData.saveAsTextFile(outputFile);
-
-        sc.stop();
+    private static void validSelectedAlgorithm(String[] args) {
+        if (!Objects.equals(args[2], "spark") && !args[2].equals("java")) {
+            System.err.println("There are two algorithms available: spark and java.");
+            System.exit(1);
+        }
     }
 }
