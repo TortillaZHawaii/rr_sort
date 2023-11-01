@@ -29,10 +29,24 @@ yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.1.jar
 
 Wynik wypisze się na konsoli a sam status pracy dostępny pod [adresem](http://localhost:8088/cluster). Więcej info na [githubie](https://github.com/oneoffcoder/docker-containers/tree/master/spark-jupyter).
 
-5. (In progress...) Tu pojawi się info jak uruchomić nasze zadania (tworzenie jar'ów i zarządzanie zadaniami)
+5. Uruchamianie naszych zadań
+   - Jak skompliować projekt?
+   
+   Uruchom polecenie ```mvn clean install``` w katalogu Spark_Sort (W nim znajduje się plik pom.xml czytany przez Maven'a). Skompliowany jar będzie znajdował się w katalogu target.
 
-### Kroki do zrobienia
+   - Jak uruchomić projekt?
+   
+   Skompilowany jar przyjmuje 3 argumenty: ```Spark_Sort-1.0-SNAPSHOT.jar <ścieżka do pliku, który chcemy posortować> <ścieżka do pliku wynikowego> <wybór wersji sekwernycjna/równoległa - java/spark>```
+     
+   - Wersja sekwencyjna
+   
+   Przykład komendy gdy znajdujemy się w katalogu target: ```java -jar Spark_Sort-1.0-SNAPSHOT.jar ../input.txt output.txt java```
+     
+   - Wersja równoległa
 
-- Skonteneryzować:  maven'a (wraz z .m [.m powinien być w katalogu HOME]), vim, update ubuntu.
-- Zaimplementować inne algorytmy sortowania
+   Przykład komendy gdy znajdujemy się w katalogu głównym projektu: ```$SPARK_HOME/bin/spark-submit --class com.example.App --master yarn target/Spark_Sort-1.0-SNAPSHOT.jar hdfs:///input.txt hdfs:///output.txt spark``` gdzie
+   ```hdfs:///input.txt``` oznacza ścieżkę ```/input.txt``` na hdfs'ie.
 
+   Aktualnie input.txt nie znajduje się na hdfs a jedynie w naszym projekcie lokalnym. Aby wrzucić go na hdfs możemy użyć komendy: ```hadoop fs -put input.txt /```. (TIP: Do hdfs'a można odwoływać się jak do zwykłego systemu plików w linuxie przykłady: ```hadoop fs -ls /``` (Wyświetli ls w katalogu / na hdfs'ie)).
+
+   Ważne info: po uruchomieniu projektu w wersji równoległej wyniki czyli input.txt na hdfs będzie katalogiem w skład którego będą wchodziły "bloki". Chodzi o to, że HDFS u swojego powstania zakłada podział na bloki po max. 128 MB każdy. Czyli prawdopodobnie posorotwany tesks znajduje się na hdfs'ie pod ścieżką: ```/output.txt/part-00000```. Jeśli chcesz wypisać go na konsoli możesz wykorzystać polecenie: ```hadoop fs -cat /output.txt/part-00000```.
