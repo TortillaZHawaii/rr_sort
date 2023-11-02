@@ -1,0 +1,50 @@
+FROM oneoffcoder/spark-jupyter:latest
+LABEL org="One-Off Coder"
+LABEL author="Jee Vang, Ph.D."
+LABEL email="info@oneoffcoder.com"
+LABEL website="https://www.oneoffcoder.com"
+LABEL facebook="https://www.facebook.com/oneoffcoder"
+LABEL twitter="https://twitter.com/oneoffcoder"
+LABEL instagram="https://www.instagram.com/oneoffcoder/"
+LABEL youtube="https://www.youtube.com/channel/UCCCv8Glpb2dq2mhUj5mcHCQ"
+LABEL linkedin="https://www.linkedin.com/company/one-off-coder"
+
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV HDFS_NAMENODE_USER=root
+ENV HDFS_DATANODE_USER=root
+ENV HDFS_SECONDARYNAMENODE_USER=root
+ENV YARN_RESOURCEMANAGER_USER=root
+ENV YARN_NODEMANAGER_USER=root
+ENV YARN_PROXYSERVER_USER=root
+ENV HADOOP_HOME=/usr/local/hadoop
+ENV HADOOP_YARN_HOME=${HADOOP_HOME}
+ENV HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+ENV HADOOP_LOG_DIR=${HADOOP_YARN_HOME}/logs
+ENV HADOOP_IDENT_STRING=root
+ENV HADOOP_MAPRED_IDENT_STRING=root
+ENV HADOOP_MAPRED_HOME=${HADOOP_HOME}
+ENV SPARK_HOME=/usr/local/spark
+ENV CONDA_HOME=/usr/local/conda
+ENV PYSPARK_MASTER=yarn
+ENV PATH=${CONDA_HOME}/bin:${SPARK_HOME}/bin:${HADOOP_HOME}/bin:${PATH}
+ENV NOTEBOOK_PASSWORD=""
+
+# setup ubuntu
+RUN apt-get update -y \
+    && apt-get upgrade -y \
+    && apt-get -y install maven vim \
+
+# setup volumes
+RUN mkdir /root/ipynb
+VOLUME [ "/root/ipynb" ]
+
+# setup supervisor
+COPY ubuntu/etc/supervisor/supervisor.conf /etc/supervisor/supervisor.conf
+COPY ubuntu/etc/supervisor/conf.d/all.conf /etc/supervisor/conf.d/all.conf
+COPY ubuntu/usr/local/bin/start-all.sh /usr/local/bin/start-all.sh
+
+# clean up
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && mkdir /tmp/spark-events
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf", "-n"]
