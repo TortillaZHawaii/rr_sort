@@ -10,6 +10,8 @@ docker pull oneoffcoder/spark-jupyter
 ```sh
 docker run -it -p 9870:9870 -p 8088:8088 -p 8080:8080 -p 18080:18080 -p 9000:9000 -p 8888:8888 -p 9864:9864 -v $HOME/git/docker-containers/spark-jupyter/ubuntu/root/ipynb:/root/ipynb -v /root/Projects/rr_sort/parallel_with_shared_memory/Spark_Sort/:/root/Spark_Sort oneoffcoder/spark-jupyter
 ```
+(można też przy użyciu docker compose [klik](./docker-compose.yml) )
+
 gdzie,
 ```sh
 /root/Projects/rr_sort/parallel_with_shared_memory/Spark_Sort/
