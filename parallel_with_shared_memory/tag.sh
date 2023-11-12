@@ -1,7 +1,9 @@
 #!/bin/bash
 
-ORGANIZATION=oneoffcoder
-REPOSITORY=spark-jupyter
-IMAGEID=spark-jupyter:local
+ORGANIZATION=lorca19
+REPOSITORY=modified-spark-jupyter
+IMAGEID=modified-spark-jupyter:v.01
+
+docker tag ${IMAGEID} ${ORGANIZATION}/${REPOSITORY}:latest
 
 docker tag ${IMAGEID} ${ORGANIZATION}/${REPOSITORY}:latest

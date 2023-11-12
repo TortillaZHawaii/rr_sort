@@ -32,10 +32,10 @@ ENV NOTEBOOK_PASSWORD=""
 # setup ubuntu
 RUN apt-get update -y \
     && apt-get upgrade -y \
-    && apt-get -y install maven vim \
+    && apt-get -y install maven vim
 
 # setup volumes
-RUN mkdir /root/ipynb
+RUN mkdir -p /root/ipynb
 VOLUME [ "/root/ipynb" ]
 
 # setup supervisor
