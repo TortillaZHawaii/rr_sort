@@ -73,7 +73,7 @@ void enumeration_sort(std::vector<std::string>::iterator begin,
   const uint grid_count_per_block = 1024;
   const uint block_count = d_arr.size / grid_count_per_block +
                            ((d_arr.size % grid_count_per_block) ? 1 : 0);
-  enumeration_sort_kernel<<<grid_count_per_block, block_count>>>(d_arr, d_res);
+  enumeration_sort_kernel<<<block_count, grid_count_per_block>>>(d_arr, d_res);
   checkCudaErrors(cudaPeekAtLastError());
 
   auto res = std::make_unique<size_t[]>(d_arr.size);
