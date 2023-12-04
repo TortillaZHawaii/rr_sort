@@ -3,11 +3,13 @@ cc_library(
     srcs = [
         "insertion_sort.cc",
         "intro_sort.cc",
+        "merge_n_sort.cc",
         "merge_sort.cc",
     ],
     hdrs = [
         "insertion_sort.h",
         "intro_sort.h",
+        "merge_n_sort.h",
         "merge_sort.h",
     ],
     copts = [
