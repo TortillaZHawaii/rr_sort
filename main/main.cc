@@ -1,5 +1,6 @@
 #include "../gpu_cuda/enumeration_sort.cuh"
 #include "../parallel_cpu/parallel_intro_sort.h"
+#include "../parallel_cpu/parallel_merge_n_sort.h"
 #include "../parallel_cpu/parallel_merge_sort.h"
 #include "../single_cpu/insertion_sort.h"
 #include "../single_cpu/intro_sort.h"
@@ -70,7 +71,9 @@ int main(int argc, char **argv) {
       SortAlgorithm("single_cpu::intro_sort", rr::single_cpu::intro_sort),
       SortAlgorithm("parallel_cpu::parallel_intro_sort",
                     rr::parallel_cpu::parallel_intro_sort),
-      SortAlgorithm("single_cpu::merge_n_sort", rr::single_cpu::merge_n_sort)
+      SortAlgorithm("single_cpu::merge_n_sort", rr::single_cpu::merge_n_sort),
+      SortAlgorithm("parallel_cpu::merge_n_sort",
+                    rr::parallel_cpu::parallel_merge_n_sort),
       // SortAlgorithm("gpu_cuda::enumeration_sort",
       //               rr::gpu_cuda::enumeration_sort),
       // SortAlgorithm("std::sort parallel mode",
