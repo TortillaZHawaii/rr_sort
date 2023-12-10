@@ -26,9 +26,7 @@ void merge(std::vector<std::string>::iterator begin,
     ++right;
   }
 
-  for (auto i = begin; i != end; ++i) {
-    *i = temp[i - begin];
-  }
+  std::copy(temp.begin(), temp.end(), begin);
 }
 
 void merge_sort(std::vector<std::string>::iterator begin,

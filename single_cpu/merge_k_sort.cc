@@ -73,7 +73,5 @@ void rr::single_cpu::merge_k_sort_with_k(
   auto result = merge_k(ranges);
 
   // copy back
-  for (auto i = begin; i != end; ++i) {
-    *i = result[i - begin];
-  }
+  std::copy(result.begin(), result.end(), begin);
 }
