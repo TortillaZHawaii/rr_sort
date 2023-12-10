@@ -7,6 +7,9 @@ cc_binary(
         "-pthread",
         "-O3",
     ],
+    linkopts = [
+        "-lgomp",
+    ],
     deps = [
         # "//gpu_cuda",
         "//openmp_cpu",

@@ -43,8 +43,8 @@ void rr::openmp_cpu::openmp_merge_k_sort_with_k(
   // copy back
 #pragma omp parallel for num_threads(k)
   for (int i = 0; i < k; ++i) {
-    std::copy(result.begin() + step * i,
-              std::min(result.begin() + step * (i + 1), result.end()),
-              begin + step * i);
+    auto range_begin = result.begin() + step * i;
+    auto range_end = (i == k - 1) ? result.end() : range_begin + step;
+    std::copy(range_begin, range_end, begin + step * i);
   }
 }

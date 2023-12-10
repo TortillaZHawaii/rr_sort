@@ -12,6 +12,9 @@ cc_library(
         "-pthread",
         "-O3",
     ],
+    linkopts = [
+        "-lgomp",
+    ],
     visibility = ["//visibility:public"],
     deps = ["//single_cpu"],
 )
