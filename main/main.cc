@@ -1,4 +1,5 @@
 // #include "../gpu_cuda/enumeration_sort.cuh"
+#include "../openmp_cpu/openmp_merge_k_sort.h"
 #include "../parallel_cpu/parallel_merge_k_sort.h"
 #include "../parallel_cpu/parallel_merge_sort.h"
 #include "../parallel_cpu/parallel_tim_sort.h"
@@ -73,7 +74,8 @@ int main(int argc, char **argv) {
       SortAlgorithm("single_cpu::merge_k_sort", rr::single_cpu::merge_k_sort),
       SortAlgorithm("parallel_cpu::merge_k_sort",
                     rr::parallel_cpu::parallel_merge_k_sort),
-
+      SortAlgorithm("openmp_cpu::openmp_merge_k_sort",
+                    rr::openmp_cpu::openmp_merge_k_sort),
       SortAlgorithm("single_cpu::insertion_sort",
                     rr::single_cpu::insertion_sort),
       // SortAlgorithm("gpu_cuda::enumeration_sort",
