@@ -5,10 +5,10 @@
 #include <vector>
 
 namespace rr::parallel_cpu {
-void parallel_merge_n_sort(std::vector<std::string>::iterator begin,
+void parallel_merge_k_sort(std::vector<std::string>::iterator begin,
                            std::vector<std::string>::iterator end);
 
-void parallel_merge_n_sort_with_n(std::vector<std::string>::iterator begin,
+void parallel_merge_k_sort_with_k(std::vector<std::string>::iterator begin,
                                   std::vector<std::string>::iterator end,
-                                  int n);
+                                  int k);
 } // namespace rr::parallel_cpu

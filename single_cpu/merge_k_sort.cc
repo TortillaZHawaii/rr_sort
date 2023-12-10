@@ -1,5 +1,5 @@
-#include "merge_n_sort.h"
-#include "intro_sort.h"
+#include "merge_k_sort.h"
+#include "tim_sort.h"
 
 #include <queue>
 #include <vector>
@@ -12,7 +12,7 @@ struct cmp {
 };
 
 std::vector<std::string>
-rr::single_cpu::merge_n(std::vector<rr::single_cpu::BeginEndPair> &ranges) {
+rr::single_cpu::merge_k(std::vector<rr::single_cpu::BeginEndPair> &ranges) {
   std::priority_queue<rr::single_cpu::BeginEndPair,
                       std::vector<rr::single_cpu::BeginEndPair>, cmp>
       pq;
@@ -38,25 +38,25 @@ rr::single_cpu::merge_n(std::vector<rr::single_cpu::BeginEndPair> &ranges) {
   return result;
 }
 
-void rr::single_cpu::merge_n_sort(std::vector<std::string>::iterator begin,
+void rr::single_cpu::merge_k_sort(std::vector<std::string>::iterator begin,
                                   std::vector<std::string>::iterator end) {
-  merge_n_sort_with_n(begin, end, 16);
+  merge_k_sort_with_k(begin, end, 16);
 }
 
-void rr::single_cpu::merge_n_sort_with_n(
+void rr::single_cpu::merge_k_sort_with_k(
     std::vector<std::string>::iterator begin,
-    std::vector<std::string>::iterator end, int n) {
+    std::vector<std::string>::iterator end, int k) {
   if (end - begin <= 1) {
     return;
   }
 
-  // divide into n parts
+  // divide into k parts
   std::vector<rr::single_cpu::BeginEndPair> ranges;
-  auto step = (end - begin) / n;
+  auto step = (end - begin) / k;
   auto start = begin;
-  for (int i = 0; i < n; ++i) {
+  for (int i = 0; i < k; ++i) {
     auto stop = start + step;
-    if (i == n - 1) {
+    if (i == k - 1) {
       stop = end;
     }
     ranges.push_back({start, stop});
@@ -66,11 +66,11 @@ void rr::single_cpu::merge_n_sort_with_n(
   // sort each part
   for (auto &range : ranges) {
     // could be any other sorting algorithm
-    intro_sort(range.first, range.second);
+    tim_sort(range.first, range.second);
   }
 
   // merge
-  auto result = merge_n(ranges);
+  auto result = merge_k(ranges);
 
   // copy back
   for (auto i = begin; i != end; ++i) {

@@ -1,11 +1,11 @@
-#include "../gpu_cuda/enumeration_sort.cuh"
-#include "../parallel_cpu/parallel_intro_sort.h"
-#include "../parallel_cpu/parallel_merge_n_sort.h"
+// #include "../gpu_cuda/enumeration_sort.cuh"
+#include "../parallel_cpu/parallel_merge_k_sort.h"
 #include "../parallel_cpu/parallel_merge_sort.h"
+#include "../parallel_cpu/parallel_tim_sort.h"
 #include "../single_cpu/insertion_sort.h"
-#include "../single_cpu/intro_sort.h"
-#include "../single_cpu/merge_n_sort.h"
+#include "../single_cpu/merge_k_sort.h"
 #include "../single_cpu/merge_sort.h"
+#include "../single_cpu/tim_sort.h"
 #include "../utils/benchmark/sort_benchmark.h"
 #include "../utils/data/reader.h"
 #include <algorithm>
@@ -66,14 +66,16 @@ int main(int argc, char **argv) {
                     rr::parallel_cpu::parallel_merge_sort),
       SortAlgorithm("std::sort",
                     [](auto begin, auto end) { std::sort(begin, end); }),
+
+      SortAlgorithm("single_cpu::tim_sort", rr::single_cpu::tim_sort),
+      SortAlgorithm("parallel_cpu::parallel_tim_sort",
+                    rr::parallel_cpu::parallel_tim_sort),
+      SortAlgorithm("single_cpu::merge_k_sort", rr::single_cpu::merge_k_sort),
+      SortAlgorithm("parallel_cpu::merge_k_sort",
+                    rr::parallel_cpu::parallel_merge_k_sort),
+
       SortAlgorithm("single_cpu::insertion_sort",
                     rr::single_cpu::insertion_sort),
-      SortAlgorithm("single_cpu::intro_sort", rr::single_cpu::intro_sort),
-      SortAlgorithm("parallel_cpu::parallel_intro_sort",
-                    rr::parallel_cpu::parallel_intro_sort),
-      SortAlgorithm("single_cpu::merge_n_sort", rr::single_cpu::merge_n_sort),
-      SortAlgorithm("parallel_cpu::merge_n_sort",
-                    rr::parallel_cpu::parallel_merge_n_sort),
       // SortAlgorithm("gpu_cuda::enumeration_sort",
       //               rr::gpu_cuda::enumeration_sort),
       // SortAlgorithm("std::sort parallel mode",
@@ -86,6 +88,7 @@ int main(int argc, char **argv) {
   csv << rr::utils::BenchmarkResult::csv_header() << std::endl;
 
   for (const auto &data : test_data) {
+    std::cout << "====================" << std::endl;
     for (const auto &algo : test_algorithms) {
       std::cout << "Running " << algo.name << " on " << data.name << std::endl;
       auto result =
