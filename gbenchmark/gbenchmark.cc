@@ -12,7 +12,7 @@ And change the path to your own path.
 bazel run -c opt //gbenchmark
 */
 
-static std::string file_name = "/home/tortilla/rr_sort/test_data/bible.txt";
+static std::string file_name = "/home/tortilla/rr_sort/test_data/bible100x.txt";
 
 static void OpenMP_MergeKSort(benchmark::State &state) {
   rr::utils::data::DataReader reader(file_name);
@@ -62,11 +62,12 @@ static void MergeSort(benchmark::State &state) {
 }
 
 BENCHMARK(OpenMP_MergeKSort)
-    ->ArgsProduct({benchmark::CreateDenseRange(1, 24, /*step=*/1)});
+    ->ArgsProduct({benchmark::CreateDenseRange(1, 24, /*step=*/1)})
+    ->Iterations(5);
 
-BENCHMARK(MergeKSort);
-BENCHMARK(StdSort);
-BENCHMARK(TimSort);
-BENCHMARK(MergeSort);
+BENCHMARK(MergeKSort)->Iterations(5);
+BENCHMARK(StdSort)->Iterations(5);
+BENCHMARK(TimSort)->Iterations(5);
+BENCHMARK(MergeSort)->Iterations(5);
 
 BENCHMARK_MAIN();
