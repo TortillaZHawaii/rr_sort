@@ -24,8 +24,11 @@ public class App {
     }
 
     private static void validSelectedAlgorithm(String[] args) {
-        if (!Objects.equals(args[2], "spark") && !args[2].equals("java")) {
-            System.err.println("There are two algorithms available: spark and java.");
+        if (!Objects.equals(args[2], "defaultsort") &&
+                !args[2].equals("timsort") &&
+                !args[2].equals("mergesort") &&
+                !args[2].equals("java")) {
+            System.err.println("There are four algorithms available: defaultsort, timsort, mergesort and java.");
             System.exit(1);
         }
     }

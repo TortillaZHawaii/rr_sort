@@ -4,9 +4,13 @@ import java.util.Objects;
 
 public class MySortFactory {
 
-    MySort createMySort(String nameOfSortAlgorithm) {
-        if (Objects.equals(nameOfSortAlgorithm, "spark")) {
-            return new SparkSort();
+    public MySort createMySort(String nameOfSortAlgorithm) {
+        if (Objects.equals(nameOfSortAlgorithm, "defaultsort")) {
+            return new MergeSortInMapReduceStyle();
+        } else if (Objects.equals(nameOfSortAlgorithm, "timsort")) {
+            return new TimSortInMapReduceStyle();
+        } else if (Objects.equals(nameOfSortAlgorithm, "mergesort")) {
+            return new MergeSortInMapReduceStyle();
         } else if (Objects.equals(nameOfSortAlgorithm, "java")) {
             return new SparkStyleSort();
         }
