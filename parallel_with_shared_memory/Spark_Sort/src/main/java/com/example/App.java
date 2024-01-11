@@ -27,8 +27,9 @@ public class App {
         if (!Objects.equals(args[2], "defaultsort") &&
                 !args[2].equals("timsort") &&
                 !args[2].equals("mergesort") &&
+                !args[2].equals("insertionsort") &&
                 !args[2].equals("java")) {
-            System.err.println("There are four algorithms available: defaultsort, timsort, mergesort and java.");
+            System.err.println("There are five algorithms available: defaultsort, timsort, mergesortm, insertionsort and java.");
             System.exit(1);
         }
     }

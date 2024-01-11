@@ -11,6 +11,8 @@ public class MySortFactory {
             return new TimSortInMapReduceStyle();
         } else if (Objects.equals(nameOfSortAlgorithm, "mergesort")) {
             return new MergeSortInMapReduceStyle();
+        } else if (Objects.equals(nameOfSortAlgorithm, "insertionsort")) {
+            return new InsertionSort();
         } else if (Objects.equals(nameOfSortAlgorithm, "java")) {
             return new SparkStyleSort();
         }
