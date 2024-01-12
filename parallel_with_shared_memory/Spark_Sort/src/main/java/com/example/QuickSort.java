@@ -14,7 +14,7 @@ public class QuickSort implements MySort, Serializable {
 
     @Override
     public void sort(String inputPath, String outputPath) {
-        SparkConf conf = new SparkConf().setAppName("insertion-sort");
+        SparkConf conf = new SparkConf().setAppName("quick-sort");
         JavaSparkContext sc = new JavaSparkContext(conf);
 
         JavaRDD<String> lines = sc.textFile(inputPath);
@@ -39,7 +39,6 @@ public class QuickSort implements MySort, Serializable {
     private static void quickSort(List<String> list) {
         // Java stdlib implementation of QuickSort
         Collections.sort(list);
-
-        return list;
+        // return list;
     }
 }
