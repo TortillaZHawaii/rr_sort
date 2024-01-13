@@ -84,6 +84,8 @@ int main(int argc, char **argv) {
       //               rr::gpu_cuda::enumeration_sort),
       SortAlgorithm("gpu_cuda::thrust_sort4", rr::gpu_cuda::thrust_sort4),
       SortAlgorithm("gpu_cuda::thrust_sort8", rr::gpu_cuda::thrust_sort8),
+      SortAlgorithm("gpu_cuda::thrust_sort8split",
+                    rr::gpu_cuda::thrust_sort8split),
       // SortAlgorithm("std::sort parallel mode",
       //               [](auto begin, auto end) {
       //                 std::sort(std::execution::par_seq, begin, end);

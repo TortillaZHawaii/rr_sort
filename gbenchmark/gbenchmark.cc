@@ -14,7 +14,7 @@ And change the path to your own path.
 bazel run -c opt //gbenchmark
 */
 
-static std::string file_name = "/home/tortilla/rr_sort/test_data/bible.txt";
+static std::string file_name = "/home/tortilla/rr_sort/test_data/bible50x.txt";
 
 static void OpenMP_MergeKSort(benchmark::State &state) {
   rr::utils::data::DataReader reader(file_name);
@@ -90,8 +90,18 @@ static void GpuThrustSort8(benchmark::State &state) {
   }
 }
 
-BENCHMARK(GpuThrustSort4);
+static void GpuThrustSort8Split(benchmark::State &state) {
+  rr::utils::data::DataReader reader(file_name);
+  auto [unsorted, sorted] = reader.read_data();
+
+  for (auto _ : state) {
+    rr::gpu_cuda::thrust_sort8split(unsorted.begin(), unsorted.end());
+  }
+}
+
 BENCHMARK(StdSort);
+// BENCHMARK(GpuThrustSort4);
 BENCHMARK(GpuThrustSort8);
+BENCHMARK(GpuThrustSort8Split);
 
 BENCHMARK_MAIN();
