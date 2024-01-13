@@ -15,9 +15,8 @@ if __name__ == '__main__':
     filename = sys.argv[1]
     word_lengths = calculate_text_statistics(filename)
 
-    plt.hist(word_lengths, bins=range(1, max(word_lengths) + 2), align='left', rwidth=0.8)
-    plt.xlabel('Word Lengths')
-    plt.ylabel('Count')
-    plt.title('Histogram of Word Lengths')
+    plt.hist(word_lengths, bins=range(1, max(word_lengths)), align='left', rwidth=0.8)
+    plt.xlabel('Długość słowa')
+    plt.ylabel('Liczba słów')
+    plt.xticks(range(1, max(word_lengths) + 1))
     plt.show()
-    
