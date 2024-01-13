@@ -4,6 +4,7 @@
 #include "../parallel_cpu/parallel_merge_k_sort.h"
 #include "../parallel_cpu/parallel_merge_sort.h"
 #include "../parallel_cpu/parallel_tim_sort.h"
+#include "../single_cpu/enumeration_sort.h"
 #include "../single_cpu/insertion_sort.h"
 #include "../single_cpu/merge_k_sort.h"
 #include "../single_cpu/merge_sort.h"
@@ -82,6 +83,7 @@ int main(int argc, char **argv) {
       //               rr::single_cpu::insertion_sort),
       // SortAlgorithm("gpu_cuda::enumeration_sort",
       //               rr::gpu_cuda::enumeration_sort),
+      SortAlgorithm("enum_sort", rr::single_cpu::enumeration_sort),
       SortAlgorithm("gpu_cuda::thrust_sort4", rr::gpu_cuda::thrust_sort4),
       SortAlgorithm("gpu_cuda::thrust_sort8", rr::gpu_cuda::thrust_sort8),
       SortAlgorithm("gpu_cuda::thrust_sort8split",
