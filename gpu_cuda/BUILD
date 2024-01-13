@@ -5,6 +5,7 @@ cuda_library(
     srcs = [
         "enumeration_sort.cu",
         "utils/string_array.cu",
+        "thrust_sort.cu",
     ],
     hdrs = [
         "enumeration_sort.cuh",
