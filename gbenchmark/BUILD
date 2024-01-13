@@ -11,6 +11,7 @@ cc_test(
         "-O3",
     ],
     deps = [
+        "//gpu_cuda",
         "//openmp_cpu",
         "//parallel_cpu",
         "//single_cpu",

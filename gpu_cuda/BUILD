@@ -8,6 +8,7 @@ cuda_library(
     ],
     hdrs = [
         "enumeration_sort.cuh",
+        "thrust_sort.cuh",
         "utils/panic.cuh",
         "utils/string_array.cuh",
     ],

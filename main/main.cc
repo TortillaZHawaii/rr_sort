@@ -1,4 +1,5 @@
-// #include "../gpu_cuda/enumeration_sort.cuh"
+#include "../gpu_cuda/enumeration_sort.cuh"
+#include "../gpu_cuda/thrust_sort.cuh"
 #include "../openmp_cpu/openmp_merge_k_sort.h"
 #include "../parallel_cpu/parallel_merge_k_sort.h"
 #include "../parallel_cpu/parallel_merge_sort.h"
@@ -51,7 +52,7 @@ int main(int argc, char **argv) {
   const std::vector<std::string> long_repeated(18000, "hello");
 
   auto test_data = std::vector<TestData>{
-      TestData("short", data, correct, 1000),
+      TestData("short", data, correct, 1),
       TestData("long_repeated", long_repeated, long_repeated, 100),
   };
 
@@ -78,8 +79,12 @@ int main(int argc, char **argv) {
                     rr::openmp_cpu::openmp_merge_k_sort),
       SortAlgorithm("single_cpu::insertion_sort",
                     rr::single_cpu::insertion_sort),
-      // SortAlgorithm("gpu_cuda::enumeration_sort",
-      //               rr::gpu_cuda::enumeration_sort),
+      SortAlgorithm("gpu_cuda::enumeration_sort",
+                    rr::gpu_cuda::enumeration_sort),
+      SortAlgorithm("gpu_cuda::thrust_sort_uint",
+                    rr::gpu_cuda::thrust_sort<unsigned int>),
+      SortAlgorithm("gpu_cuda::thrust_sort_ull",
+                    rr::gpu_cuda::thrust_sort<unsigned long long>),
       // SortAlgorithm("std::sort parallel mode",
       //               [](auto begin, auto end) {
       //                 std::sort(std::execution::par_seq, begin, end);
