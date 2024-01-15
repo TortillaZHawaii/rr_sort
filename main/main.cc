@@ -1,8 +1,10 @@
-// #include "../gpu_cuda/enumeration_sort.cuh"
+#include "../gpu_cuda/enumeration_sort.cuh"
+#include "../gpu_cuda/thrust_sort.cuh"
 #include "../openmp_cpu/openmp_merge_k_sort.h"
 #include "../parallel_cpu/parallel_merge_k_sort.h"
 #include "../parallel_cpu/parallel_merge_sort.h"
 #include "../parallel_cpu/parallel_tim_sort.h"
+#include "../single_cpu/enumeration_sort.h"
 #include "../single_cpu/insertion_sort.h"
 #include "../single_cpu/merge_k_sort.h"
 #include "../single_cpu/merge_sort.h"
@@ -51,8 +53,8 @@ int main(int argc, char **argv) {
   const std::vector<std::string> long_repeated(18000, "hello");
 
   auto test_data = std::vector<TestData>{
-      TestData("short", data, correct, 1000),
-      TestData("long_repeated", long_repeated, long_repeated, 100),
+      TestData("short", data, correct, 1),
+      // TestData("long_repeated", long_repeated, long_repeated, 100),
   };
 
   for (int i = 1; i < argc; ++i) {
@@ -62,24 +64,30 @@ int main(int argc, char **argv) {
   }
 
   auto test_algorithms = std::vector<SortAlgorithm>{
-      SortAlgorithm("single_cpu::merge_sort", rr::single_cpu::merge_sort),
-      SortAlgorithm("parallel_cpu::parallel_merge_sort",
-                    rr::parallel_cpu::parallel_merge_sort),
-      SortAlgorithm("std::sort",
-                    [](auto begin, auto end) { std::sort(begin, end); }),
+      // SortAlgorithm("single_cpu::merge_sort", rr::single_cpu::merge_sort),
+      // SortAlgorithm("parallel_cpu::parallel_merge_sort",
+      //               rr::parallel_cpu::parallel_merge_sort),
+      // SortAlgorithm("std::sort",
+      //               [](auto begin, auto end) { std::sort(begin, end); }),
 
-      SortAlgorithm("single_cpu::tim_sort", rr::single_cpu::tim_sort),
-      SortAlgorithm("parallel_cpu::parallel_tim_sort",
-                    rr::parallel_cpu::parallel_tim_sort),
-      SortAlgorithm("single_cpu::merge_k_sort", rr::single_cpu::merge_k_sort),
-      SortAlgorithm("parallel_cpu::merge_k_sort",
-                    rr::parallel_cpu::parallel_merge_k_sort),
-      SortAlgorithm("openmp_cpu::openmp_merge_k_sort",
-                    rr::openmp_cpu::openmp_merge_k_sort),
-      SortAlgorithm("single_cpu::insertion_sort",
-                    rr::single_cpu::insertion_sort),
+      // SortAlgorithm("single_cpu::tim_sort", rr::single_cpu::tim_sort),
+      // SortAlgorithm("parallel_cpu::parallel_tim_sort",
+      //               rr::parallel_cpu::parallel_tim_sort),
+      // SortAlgorithm("single_cpu::merge_k_sort",
+      // rr::single_cpu::merge_k_sort),
+      // SortAlgorithm("parallel_cpu::merge_k_sort",
+      //               rr::parallel_cpu::parallel_merge_k_sort),
+      // SortAlgorithm("openmp_cpu::openmp_merge_k_sort",
+      //               rr::openmp_cpu::openmp_merge_k_sort),
+      // SortAlgorithm("single_cpu::insertion_sort",
+      //               rr::single_cpu::insertion_sort),
       // SortAlgorithm("gpu_cuda::enumeration_sort",
       //               rr::gpu_cuda::enumeration_sort),
+      SortAlgorithm("enum_sort", rr::single_cpu::enumeration_sort),
+      SortAlgorithm("gpu_cuda::thrust_sort4", rr::gpu_cuda::thrust_sort4),
+      SortAlgorithm("gpu_cuda::thrust_sort8", rr::gpu_cuda::thrust_sort8),
+      SortAlgorithm("gpu_cuda::thrust_sort8split",
+                    rr::gpu_cuda::thrust_sort8split),
       // SortAlgorithm("std::sort parallel mode",
       //               [](auto begin, auto end) {
       //                 std::sort(std::execution::par_seq, begin, end);

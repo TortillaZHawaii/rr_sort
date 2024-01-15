@@ -11,7 +11,7 @@ cc_binary(
         "-lgomp",
     ],
     deps = [
-        # "//gpu_cuda",
+        "//gpu_cuda",
         "//openmp_cpu",
         "//parallel_cpu",
         "//single_cpu",

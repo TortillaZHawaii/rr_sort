@@ -1,0 +1,31 @@
+###############################################################################
+# Bazel now uses Bzlmod by default to manage external dependencies.
+# Please consider migrating your external dependencies from WORKSPACE to MODULE.bazel.
+#
+# For more details, please check https://github.com/bazelbuild/bazel/issues/18958
+###############################################################################
+# module(
+#     name = "rr_sort"
+# )
+
+# bazel_dep(
+#     name = "rules_cuda",
+#     version = "0.2.1"
+# )
+
+# load("@rules_cuda//cuda:repositories.bzl", "register_detected_cuda_toolchains", "rules_cuda_dependencies")
+
+# rules_cuda_dependencies()
+
+# register_detected_cuda_toolchains()
+
+# bazel_dep(
+#     name = "gtest",
+#     version = "v1.10.0"
+# )
+
+# bazel_dep(
+#     name = "benchmark",
+#     version = "1.7.1"
+# )
+

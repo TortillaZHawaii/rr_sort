@@ -1,3 +1,5 @@
+#include "../gpu_cuda/enumeration_sort.cuh"
+#include "../gpu_cuda/thrust_sort.cuh"
 #include "../openmp_cpu/openmp_merge_k_sort.h"
 #include "../single_cpu/merge_k_sort.h"
 #include "../single_cpu/merge_sort.h"
@@ -12,7 +14,7 @@ And change the path to your own path.
 bazel run -c opt //gbenchmark
 */
 
-static std::string file_name = "/home/tortilla/rr_sort/test_data/bible100x.txt";
+static std::string file_name = "/home/tortilla/rr_sort/test_data/bible50x.txt";
 
 static void OpenMP_MergeKSort(benchmark::State &state) {
   rr::utils::data::DataReader reader(file_name);
@@ -61,13 +63,45 @@ static void MergeSort(benchmark::State &state) {
   }
 }
 
-BENCHMARK(OpenMP_MergeKSort)
-    ->ArgsProduct({benchmark::CreateDenseRange(1, 24, /*step=*/1)})
-    ->Iterations(5);
+static void GpuEnumSort(benchmark::State &state) {
+  rr::utils::data::DataReader reader(file_name);
+  auto [unsorted, sorted] = reader.read_data();
 
-BENCHMARK(MergeKSort)->Iterations(5);
-BENCHMARK(StdSort)->Iterations(5);
-BENCHMARK(TimSort)->Iterations(5);
-BENCHMARK(MergeSort)->Iterations(5);
+  for (auto _ : state) {
+    rr::gpu_cuda::enumeration_sort(unsorted.begin(), unsorted.end());
+  }
+}
+
+static void GpuThrustSort4(benchmark::State &state) {
+  rr::utils::data::DataReader reader(file_name);
+  auto [unsorted, sorted] = reader.read_data();
+
+  for (auto _ : state) {
+    rr::gpu_cuda::thrust_sort4(unsorted.begin(), unsorted.end());
+  }
+}
+
+static void GpuThrustSort8(benchmark::State &state) {
+  rr::utils::data::DataReader reader(file_name);
+  auto [unsorted, sorted] = reader.read_data();
+
+  for (auto _ : state) {
+    rr::gpu_cuda::thrust_sort8(unsorted.begin(), unsorted.end());
+  }
+}
+
+static void GpuThrustSort8Split(benchmark::State &state) {
+  rr::utils::data::DataReader reader(file_name);
+  auto [unsorted, sorted] = reader.read_data();
+
+  for (auto _ : state) {
+    rr::gpu_cuda::thrust_sort8split(unsorted.begin(), unsorted.end());
+  }
+}
+
+BENCHMARK(StdSort);
+// BENCHMARK(GpuThrustSort4);
+BENCHMARK(GpuThrustSort8);
+BENCHMARK(GpuThrustSort8Split);
 
 BENCHMARK_MAIN();
