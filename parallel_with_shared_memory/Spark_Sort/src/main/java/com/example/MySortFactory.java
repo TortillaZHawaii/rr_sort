@@ -15,6 +15,8 @@ public class MySortFactory {
             return new InsertionSort();
         } else if (Objects.equals(nameOfSortAlgorithm, "quicksort")) {
             return new QuickSort();
+        } else if (Objects.equals(nameOfSortAlgorithm, "quicksort-map-reduce")) {
+            return new QuickSort();
         } else if (Objects.equals(nameOfSortAlgorithm, "java")) {
             return new SparkStyleSort();
         }
