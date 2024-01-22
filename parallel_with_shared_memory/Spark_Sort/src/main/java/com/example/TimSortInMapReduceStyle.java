@@ -32,14 +32,15 @@ public class TimSortInMapReduceStyle implements MySort, Serializable {
             return list.iterator();
         });
 
-        sortedWords.coalesce(1, true).saveAsTextFile(outputPath);
+        // sortedWords.coalesce(1, true).saveAsTextFile(outputPath);
+        sortedWords.coalesce(1, true, new CustomSortComparator()).saveAsTextFile(outputPath);
         // sortedWords.saveAsTextFile(outputPath);
 
         sc.stop();
         sc.close();
     }
 
-    private void timSort(List<String> list) {
+        private void timSort(List<String> list) {
         int n = list.size();
         int chunkSize = Math.max(1, n / NUMBER_OF_CHUNKS);
 
@@ -53,6 +54,15 @@ public class TimSortInMapReduceStyle implements MySort, Serializable {
         insertionSort(list);
     }
 
+    private static class CustomSortComparator implements Comparator<String>, Serializable {
+        @Override
+        public int compare(String s1, String s2) {
+            // Tutaj umieść logikę porównywania dla niestandardowego sortowania
+            // Zależnie od twoich potrzeb
+            return s1.compareTo(s2);
+        }
+    }
+    
     private static void insertionSort(List<String> list) {
         int n = list.size();
         for (int i = 1; i < n; ++i) {
