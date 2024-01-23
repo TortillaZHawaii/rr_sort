@@ -33,7 +33,7 @@
              return list.iterator();
          });
 
-         JavaRDD<String> mergedList = sortedWords.coalesce(1);
+         JavaRDD<String> mergedList = sortedWords.repartition(1);
          JavaRDD<String> sortedMergedWords = mergedList.mapPartitions(iterator -> {
              List<String> list = new ArrayList<>();
              while (iterator.hasNext()) {
