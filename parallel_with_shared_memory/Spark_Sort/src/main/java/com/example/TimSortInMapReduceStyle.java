@@ -38,10 +38,10 @@
          // Zastosuj Merge K Sorted Lists
          List<String> finalSortedResults = mergeKSortedLists(coalescedSortedWords.collect());
 
-         List<String> ffSR = mergeKSortedLists(finalSortedResults);
+         mergeSort(finalSortedResults);
 
          // Zapisz wyniki do pliku
-         sc.parallelize(ffSR, 1).saveAsTextFile(outputPath);
+         sc.parallelize(finalSortedResults, 1).saveAsTextFile(outputPath);
 
          sc.stop();
          sc.close();
@@ -93,7 +93,7 @@
      }
 
 
-     public static void mergeSort(List<String> list) {
+     public void mergeSort(List<String> list) {
          if (list.size() <= 1) {
              return;
          }
@@ -109,7 +109,7 @@
          merge(list, left, right);
      }
 
-     private static void merge(List<String> result, List<String> left, List<String> right) {
+     private void merge(List<String> result, List<String> left, List<String> right) {
          int i = 0, j = 0, k = 0;
 
          while (i < left.size() && j < right.size()) {
