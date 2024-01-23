@@ -38,7 +38,7 @@
          // Zastosuj Merge K Sorted Lists
          List<String> finalSortedResults = mergeKSortedLists(coalescedSortedWords.collect());
 
-         mergeSort(finalSortedResults);
+//         mergeSort(finalSortedResults);
 
          // Zapisz wyniki do pliku
          sc.parallelize(finalSortedResults, 1).saveAsTextFile(outputPath);
