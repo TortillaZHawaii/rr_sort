@@ -4,25 +4,31 @@
  import org.apache.spark.api.java.JavaRDD;
  import org.apache.spark.api.java.JavaSparkContext;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.PriorityQueue;
+ import java.io.Serializable;
+ import java.util.ArrayList;
+ import java.util.Arrays;
+ import java.util.List;
 
  public class TimSortInMapReduceStyle implements MySort, Serializable {
 
      private final int NUMBER_OF_CHUNKS = 10;
 
-    private final int NUMBER_OF_CHUNKS = 10;
-    private final int NUMBER_OF_PARTITIONS = 40;
+     @Override
+     public void sort(String inputPath, String outputPath) {
+         // SETUP SPARK
+         SparkConf conf = new SparkConf().setAppName("tim-sort-in-map-reduce-style");
+         JavaSparkContext sc = new JavaSparkContext(conf);
 
          // READ FROM HDFS
          JavaRDD<String> lines = sc.textFile(inputPath);
 
-        JavaRDD<String> lines = sc.textFile(inputPath).repartition(NUMBER_OF_PARTITIONS);
-        JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" "))
-            .iterator());
+         // MAP
+         JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" ")).iterator());
+         JavaRDD<String> sortedWords = words.mapPartitions(iterator -> {
+             List<String> list = new ArrayList<>();
+             while (iterator.hasNext()) {
+                 list.add(iterator.next());
+             }
 
              timSort(list);
 
@@ -37,7 +43,10 @@ import java.util.PriorityQueue;
          // WRITE TO HDFS
          sc.parallelize(finalSortedResults, 1).saveAsTextFile(outputPath);
 
-            List<String> mergedKSotedList = mergeKSortedLists(list, NUMBER_OF_PARTITIONS);
+         // TEARDOWN SPARK
+         sc.stop();
+         sc.close();
+     }
 
      private void timSort(List<String> list) {
          int n = list.size();
