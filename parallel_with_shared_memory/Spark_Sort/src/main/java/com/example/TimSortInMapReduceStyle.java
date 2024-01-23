@@ -37,7 +37,7 @@
 
          // Zastosuj Merge K Sorted Lists
 //         List<String> finalSortedResults = mergeKSortedLists(coalescedSortedWords.collect());
-         List<String> finalSortedResults = coalescedSortedWords.collect();
+         List<String> finalSortedResults = new ArrayList<>(coalescedSortedWords.collect());
 
          mergeSort(finalSortedResults);
 
