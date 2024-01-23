@@ -20,7 +20,7 @@ public class TimSortInMapReduceStyle implements MySort, Serializable {
         SparkConf conf = new SparkConf().setAppName("tim-sort-in-map-reduce-style");
         JavaSparkContext sc = new JavaSparkContext(conf);
 
-        JavaRDD<String> lines = sc.textFile(inputPath).repartition(2);
+        JavaRDD<String> lines = sc.textFile(inputPath);
         JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" ")).iterator());
 
         JavaRDD<String> sortedWords = words.mapPartitions(iterator -> {
@@ -34,19 +34,19 @@ public class TimSortInMapReduceStyle implements MySort, Serializable {
             return list.iterator();
         });
 
-        JavaRDD<String> mergedList =sortedWords.coalesce(1);
-        JavaRDD<String> sortedMergedWords = mergedList.mapPartitions(iterator -> {
-            List<String> list = new java.util.ArrayList<>();
-            while (iterator.hasNext()) {
-                list.add(iterator.next());
-            }
+//        JavaRDD<String> mergedList =sortedWords.coalesce(1);
+//        JavaRDD<String> sortedMergedWords = mergedList.mapPartitions(iterator -> {
+//            List<String> list = new java.util.ArrayList<>();
+//            while (iterator.hasNext()) {
+//                list.add(iterator.next());
+//            }
+//
+//            List<String> mergedKSotedList = mergeKSortedLists(list, 40);
+//
+//            return mergedKSotedList.iterator();
+//        });
 
-            List<String> mergedKSotedList = mergeKSortedLists(list, 40);
-
-            return mergedKSotedList.iterator();
-        });
-
-        sortedMergedWords.saveAsTextFile(outputPath);
+        sortedWords.saveAsTextFile(outputPath);
 
         sc.stop();
         sc.close();
