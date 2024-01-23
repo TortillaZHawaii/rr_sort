@@ -33,14 +33,15 @@
              return list.iterator();
          });
 
-         JavaRDD<String> coalescedSortedWords = sortedWords.coalesce(1);
+         JavaRDD<String> coalescedSortedWords = sortedWords.coalesce(1); // Scal partycje do jednej
 
-//         List<String> finalSortedResults = mergeKSortedLists(coalescedSortedWords.collect());
-         List<String> finalSortedResult = coalescedSortedWords.collect();
+         // Zastosuj Merge K Sorted Lists
+         List<String> finalSortedResults = mergeKSortedLists(coalescedSortedWords.collect());
 
-         mergeSort(finalSortedResult);
+         mergeSort(finalSortedResults);
 
-         sc.parallelize(finalSortedResult, 1).saveAsTextFile(outputPath);
+         // Zapisz wyniki do pliku
+         sc.parallelize(finalSortedResults, 1).saveAsTextFile(outputPath);
 
          sc.stop();
          sc.close();
@@ -67,11 +68,13 @@
 
              insertionSort(sublist);
 
+             // Przypisz posortowaną sublistę z powrotem do oryginalnej listy
              for (int j = i; j < end; j++) {
                  list.set(j, sublist.get(j - i));
              }
          }
 
+         // Usuń sortowanie na końcu całej listy, jeśli to konieczne
          insertionSort(list);
      }
 
@@ -88,6 +91,7 @@
              list.set(j + 1, key);
          }
      }
+
 
      public void mergeSort(List<String> list) {
          if (list.size() <= 1) {
