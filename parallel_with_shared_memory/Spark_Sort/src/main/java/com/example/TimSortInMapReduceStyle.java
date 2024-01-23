@@ -8,7 +8,6 @@
  import java.util.ArrayList;
  import java.util.Arrays;
  import java.util.List;
- import java.util.PriorityQueue;
 
  public class TimSortInMapReduceStyle implements MySort, Serializable {
 
@@ -16,12 +15,15 @@
 
      @Override
      public void sort(String inputPath, String outputPath) {
+         // SETUP SPARK
          SparkConf conf = new SparkConf().setAppName("merge-k-sorted-lists-in-map-reduce-style");
          JavaSparkContext sc = new JavaSparkContext(conf);
 
+         // READ FROM HDFS
          JavaRDD<String> lines = sc.textFile(inputPath);
-         JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" ")).iterator());
 
+         // MAP
+         JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" ")).iterator());
          JavaRDD<String> sortedWords = words.mapPartitions(iterator -> {
              List<String> list = new java.util.ArrayList<>();
              while (iterator.hasNext()) {
@@ -33,30 +35,17 @@
              return list.iterator();
          });
 
-         JavaRDD<String> coalescedSortedWords = sortedWords.coalesce(1); // Scal partycje do jednej
-
-         // Zastosuj Merge K Sorted Lists
-//         List<String> finalSortedResults = mergeKSortedLists(coalescedSortedWords.collect());
+         // REDUCE
+         JavaRDD<String> coalescedSortedWords = sortedWords.coalesce(1);
          List<String> finalSortedResults = new ArrayList<>(coalescedSortedWords.collect());
-
          mergeSort(finalSortedResults);
 
-         // Zapisz wyniki do pliku
+         // WRITE TO HDFS
          sc.parallelize(finalSortedResults, 1).saveAsTextFile(outputPath);
 
+         // TEARDOWN SPARK
          sc.stop();
          sc.close();
-     }
-
-     private List<String> mergeKSortedLists(List<String> lists) {
-         PriorityQueue<String> minHeap = new PriorityQueue<>(lists);
-
-         List<String> result = new java.util.ArrayList<>();
-         while (!minHeap.isEmpty()) {
-             result.add(minHeap.poll());
-         }
-
-         return result;
      }
 
      private void timSort(List<String> list) {
@@ -90,7 +79,6 @@
              list.set(j + 1, key);
          }
      }
-
 
      public void mergeSort(List<String> list) {
          if (list.size() <= 1) {
