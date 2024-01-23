@@ -32,7 +32,7 @@
              return list.iterator();
          });
 
-         sortedWords.saveAsTextFile(outputPath);
+         sortedWords.repartition(1).saveAsTextFile(outputPath);
 
          sc.stop();
          sc.close();
