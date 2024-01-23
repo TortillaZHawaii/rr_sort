@@ -8,6 +8,7 @@
  import java.util.ArrayList;
  import java.util.Arrays;
  import java.util.List;
+ import java.util.PriorityQueue;
 
  public class TimSortInMapReduceStyle implements MySort, Serializable {
 
@@ -15,14 +16,14 @@
 
      @Override
      public void sort(String inputPath, String outputPath) {
-         SparkConf conf = new SparkConf().setAppName("tim-sort-in-map-reduce-style");
+         SparkConf conf = new SparkConf().setAppName("merge-k-sorted-lists-in-map-reduce-style");
          JavaSparkContext sc = new JavaSparkContext(conf);
 
          JavaRDD<String> lines = sc.textFile(inputPath);
          JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" ")).iterator());
 
          JavaRDD<String> sortedWords = words.mapPartitions(iterator -> {
-             List<String> list = new ArrayList<>();
+             List<String> list = new java.util.ArrayList<>();
              while (iterator.hasNext()) {
                  list.add(iterator.next());
              }
@@ -32,10 +33,27 @@
              return list.iterator();
          });
 
-         sortedWords.repartition(1).saveAsTextFile(outputPath);
+         JavaRDD<String> coalescedSortedWords = sortedWords.coalesce(1); // Scal partycje do jednej
+
+         // Zastosuj Merge K Sorted Lists
+         List<String> finalSortedResults = mergeKSortedLists(coalescedSortedWords.collect());
+
+         // Zapisz wyniki do pliku
+         sc.parallelize(finalSortedResults, 1).saveAsTextFile(outputPath);
 
          sc.stop();
          sc.close();
+     }
+
+     private List<String> mergeKSortedLists(List<String> lists) {
+         PriorityQueue<String> minHeap = new PriorityQueue<>(lists);
+
+         List<String> result = new java.util.ArrayList<>();
+         while (!minHeap.isEmpty()) {
+             result.add(minHeap.poll());
+         }
+
+         return result;
      }
 
      private void timSort(List<String> list) {
