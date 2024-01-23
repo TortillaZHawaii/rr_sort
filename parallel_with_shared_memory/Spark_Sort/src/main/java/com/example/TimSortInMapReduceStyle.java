@@ -4,7 +4,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 
-import java.io.Serializable;`
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,7 @@ public class TimSortInMapReduceStyle implements MySort, Serializable {
         SparkConf conf = new SparkConf().setAppName("tim-sort-in-map-reduce-style");
         JavaSparkContext sc = new JavaSparkContext(conf);
 
-        JavaRDD<String> lines = sc.textFile(inputPath).repartition(40);
+        JavaRDD<String> lines = sc.textFile(inputPath).repartition(2);
         JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" ")).iterator());
 
         JavaRDD<String> sortedWords = words.mapPartitions(iterator -> {
