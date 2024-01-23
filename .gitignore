@@ -20,3 +20,9 @@ node_modules
 /compile_commands.json
 # Ignore the directory in which `clangd` stores its local index.
 /.cache/
+
+
+
+### parallel_with_shared_memory
+
+parallel_with_shared_memory/Spark_Sort/target
