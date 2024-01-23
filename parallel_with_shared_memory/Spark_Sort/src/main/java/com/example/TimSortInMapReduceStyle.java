@@ -4,7 +4,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 
-import java.io.Serializable;`
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,14 +14,16 @@ import java.util.PriorityQueue;
 public class TimSortInMapReduceStyle implements MySort, Serializable {
 
     private final int NUMBER_OF_CHUNKS = 10;
+    private final int NUMBER_OF_PARTITIONS = 40;
 
     @Override
     public void sort(String inputPath, String outputPath) {
         SparkConf conf = new SparkConf().setAppName("tim-sort-in-map-reduce-style");
         JavaSparkContext sc = new JavaSparkContext(conf);
 
-        JavaRDD<String> lines = sc.textFile(inputPath).repartition(40);
-        JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" ")).iterator());
+        JavaRDD<String> lines = sc.textFile(inputPath).repartition(NUMBER_OF_PARTITIONS);
+        JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" "))
+            .iterator());
 
         JavaRDD<String> sortedWords = words.mapPartitions(iterator -> {
             List<String> list = new java.util.ArrayList<>();
@@ -41,7 +43,7 @@ public class TimSortInMapReduceStyle implements MySort, Serializable {
                 list.add(iterator.next());
             }
 
-            List<String> mergedKSotedList = mergeKSortedLists(list, 40);
+            List<String> mergedKSotedList = mergeKSortedLists(list, NUMBER_OF_PARTITIONS);
 
             return mergedKSotedList.iterator();
         });
