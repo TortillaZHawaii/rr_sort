@@ -1,8 +1,8 @@
  package com.example;
 
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
+ import org.apache.spark.SparkConf;
+ import org.apache.spark.api.java.JavaRDD;
+ import org.apache.spark.api.java.JavaSparkContext;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,104 +10,100 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.PriorityQueue;
 
+ public class TimSortInMapReduceStyle implements MySort, Serializable {
 
-public class TimSortInMapReduceStyle implements MySort, Serializable {
+     private final int NUMBER_OF_CHUNKS = 10;
 
     private final int NUMBER_OF_CHUNKS = 10;
     private final int NUMBER_OF_PARTITIONS = 40;
 
-    @Override
-    public void sort(String inputPath, String outputPath) {
-        SparkConf conf = new SparkConf().setAppName("tim-sort-in-map-reduce-style");
-        JavaSparkContext sc = new JavaSparkContext(conf);
+         // READ FROM HDFS
+         JavaRDD<String> lines = sc.textFile(inputPath);
 
         JavaRDD<String> lines = sc.textFile(inputPath).repartition(NUMBER_OF_PARTITIONS);
         JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" "))
             .iterator());
 
-        JavaRDD<String> sortedWords = words.mapPartitions(iterator -> {
-            List<String> list = new java.util.ArrayList<>();
-            while (iterator.hasNext()) {
-                list.add(iterator.next());
-            }
+             timSort(list);
 
-            timSort(list);
+             return list.iterator();
+         });
 
-            return list.iterator();
-        });
+         // REDUCE
+         JavaRDD<String> coalescedSortedWords = sortedWords.coalesce(1);
+         List<String> finalSortedResults = new ArrayList<>(coalescedSortedWords.collect());
+         mergeKSort(finalSortedResults);
 
-        JavaRDD<String> mergedList =sortedWords.coalesce(1);
-        JavaRDD<String> sortedMergedWords = mergedList.mapPartitions(iterator -> {
-            List<String> list = new java.util.ArrayList<>();
-            while (iterator.hasNext()) {
-                list.add(iterator.next());
-            }
+         // WRITE TO HDFS
+         sc.parallelize(finalSortedResults, 1).saveAsTextFile(outputPath);
 
             List<String> mergedKSotedList = mergeKSortedLists(list, NUMBER_OF_PARTITIONS);
 
-            return mergedKSotedList.iterator();
-        });
+     private void timSort(List<String> list) {
+         int n = list.size();
+         int chunkSize = Math.max(1, n / NUMBER_OF_CHUNKS);
 
-        sortedMergedWords.saveAsTextFile(outputPath);
+         for (int i = 0; i < n; i += chunkSize) {
+             int end = Math.min(i + chunkSize, n);
+             List<String> sublist = new ArrayList<>(list.subList(i, end));
 
-        sc.stop();
-        sc.close();
-    }
+             insertionSort(sublist);
 
-    public List<String> mergeKSortedLists(List<String> input, int k) {
-        if (input == null || input.isEmpty()) {
-            // return new ArrayList<>();
-            throw new RuntimeException("Input list is empty");
-        }
+             for (int j = i; j < end; j++) {
+                 list.set(j, sublist.get(j - i));
+             }
+         }
 
-        PriorityQueue<String> minHeap = new PriorityQueue<>();
-        List<String> result = new ArrayList<>();
+         insertionSort(list);
+     }
 
-        int groups = 0;
-        for (String element : input) {
-            minHeap.offer(element);
-            groups++;
+     private static void insertionSort(List<String> list) {
+         int n = list.size();
+         for (int i = 1; i < n; ++i) {
+             String key = list.get(i);
+             int j = i - 1;
 
-            if (groups == k) {
-                while (!minHeap.isEmpty()) {
-                    result.add(minHeap.poll());
-                }
-                groups = 0;
-            }
-        }
+             while (j >= 0 && list.get(j).compareTo(key) > 0) {
+                 list.set(j + 1, list.get(j));
+                 j = j - 1;
+             }
+             list.set(j + 1, key);
+         }
+     }
 
-        while (!minHeap.isEmpty()) {
-            result.add(minHeap.poll());
-        }
+     public void mergeKSort(List<String> list) {
+         if (list.size() <= 1) {
+             return;
+         }
 
-        return result;
-    }
+         int middle = list.size() / 2;
 
-    private void timSort(List<String> list) {
-        int n = list.size();
-        int chunkSize = Math.max(1, n / NUMBER_OF_CHUNKS);
+         List<String> left = new ArrayList<>(list.subList(0, middle));
+         List<String> right = new ArrayList<>(list.subList(middle, list.size()));
 
-        for (int i = 0; i < n; i += chunkSize) {
-            int end = Math.min(i + chunkSize, n);
-            List<String> sublist = list.subList(i, end);
+         mergeKSort(left);
+         mergeKSort(right);
 
-            insertionSort(sublist);
-        }
+         mergeK(list, left, right);
+     }
 
-        insertionSort(list);
-    }
+     private void mergeK(List<String> result, List<String> left, List<String> right) {
+         int i = 0, j = 0, k = 0;
 
-    private static void insertionSort(List<String> list) {
-        int n = list.size();
-        for (int i = 1; i < n; ++i) {
-            String key = list.get(i);
-            int j = i - 1;
+         while (i < left.size() && j < right.size()) {
+             if (left.get(i).compareTo(right.get(j)) <= 0) {
+                 result.set(k++, left.get(i++));
+             } else {
+                 result.set(k++, right.get(j++));
+             }
+         }
 
-            while (j >= 0 && list.get(j).compareTo(key) > 0) {
-                list.set(j + 1, list.get(j));
-                j = j - 1;
-            }
-            list.set(j + 1, key);
-        }
-    }
-}
+         while (i < left.size()) {
+             result.set(k++, left.get(i++));
+         }
+
+         while (j < right.size()) {
+             result.set(k++, right.get(j++));
+         }
+     }
+ }
