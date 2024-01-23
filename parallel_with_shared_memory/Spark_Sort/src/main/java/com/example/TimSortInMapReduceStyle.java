@@ -16,7 +16,7 @@
      @Override
      public void sort(String inputPath, String outputPath) {
          // SETUP SPARK
-         SparkConf conf = new SparkConf().setAppName("merge-k-sorted-lists-in-map-reduce-style");
+         SparkConf conf = new SparkConf().setAppName("tim-sort-in-map-reduce-style");
          JavaSparkContext sc = new JavaSparkContext(conf);
 
          // READ FROM HDFS
@@ -25,7 +25,7 @@
          // MAP
          JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" ")).iterator());
          JavaRDD<String> sortedWords = words.mapPartitions(iterator -> {
-             List<String> list = new java.util.ArrayList<>();
+             List<String> list = new ArrayList<>();
              while (iterator.hasNext()) {
                  list.add(iterator.next());
              }
@@ -38,7 +38,7 @@
          // REDUCE
          JavaRDD<String> coalescedSortedWords = sortedWords.coalesce(1);
          List<String> finalSortedResults = new ArrayList<>(coalescedSortedWords.collect());
-         mergeSort(finalSortedResults);
+         mergeKSort(finalSortedResults);
 
          // WRITE TO HDFS
          sc.parallelize(finalSortedResults, 1).saveAsTextFile(outputPath);
@@ -80,7 +80,7 @@
          }
      }
 
-     public void mergeSort(List<String> list) {
+     public void mergeKSort(List<String> list) {
          if (list.size() <= 1) {
              return;
          }
@@ -90,13 +90,13 @@
          List<String> left = new ArrayList<>(list.subList(0, middle));
          List<String> right = new ArrayList<>(list.subList(middle, list.size()));
 
-         mergeSort(left);
-         mergeSort(right);
+         mergeKSort(left);
+         mergeKSort(right);
 
-         merge(list, left, right);
+         mergeK(list, left, right);
      }
 
-     private void merge(List<String> result, List<String> left, List<String> right) {
+     private void mergeK(List<String> result, List<String> left, List<String> right) {
          int i = 0, j = 0, k = 0;
 
          while (i < left.size() && j < right.size()) {

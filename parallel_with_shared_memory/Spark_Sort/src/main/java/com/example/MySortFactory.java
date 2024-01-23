@@ -6,7 +6,7 @@ public class MySortFactory {
 
     public MySort createMySort(String nameOfSortAlgorithm) {
         if (Objects.equals(nameOfSortAlgorithm, "defaultsort")) {
-            return new MergeSortInMapReduceStyle();
+            return new SparkStyleSort();
         } else if (Objects.equals(nameOfSortAlgorithm, "timsort")) {
             return new TimSortInMapReduceStyle();
         } else if (Objects.equals(nameOfSortAlgorithm, "mergesort")) {
