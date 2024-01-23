@@ -36,9 +36,10 @@
          JavaRDD<String> coalescedSortedWords = sortedWords.coalesce(1); // Scal partycje do jednej
 
          // Zastosuj Merge K Sorted Lists
-         List<String> finalSortedResults = mergeKSortedLists(coalescedSortedWords.collect());
+//         List<String> finalSortedResults = mergeKSortedLists(coalescedSortedWords.collect());
+         List<String> finalSortedResults = coalescedSortedWords.collect();
 
-//         mergeSort(finalSortedResults);
+         mergeSort(finalSortedResults);
 
          // Zapisz wyniki do pliku
          sc.parallelize(finalSortedResults, 1).saveAsTextFile(outputPath);
