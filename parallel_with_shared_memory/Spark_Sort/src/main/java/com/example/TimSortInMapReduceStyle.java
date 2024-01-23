@@ -38,8 +38,10 @@
          // Zastosuj Merge K Sorted Lists
          List<String> finalSortedResults = mergeKSortedLists(coalescedSortedWords.collect());
 
+         List<String> ffSR = mergeKSortedLists(finalSortedResults);
+
          // Zapisz wyniki do pliku
-         sc.parallelize(finalSortedResults, 1).saveAsTextFile(outputPath);
+         sc.parallelize(ffSR, 1).saveAsTextFile(outputPath);
 
          sc.stop();
          sc.close();
@@ -87,6 +89,43 @@
                  j = j - 1;
              }
              list.set(j + 1, key);
+         }
+     }
+
+
+     public static void mergeSort(List<String> list) {
+         if (list.size() <= 1) {
+             return;
+         }
+
+         int middle = list.size() / 2;
+
+         List<String> left = new ArrayList<>(list.subList(0, middle));
+         List<String> right = new ArrayList<>(list.subList(middle, list.size()));
+
+         mergeSort(left);
+         mergeSort(right);
+
+         merge(list, left, right);
+     }
+
+     private static void merge(List<String> result, List<String> left, List<String> right) {
+         int i = 0, j = 0, k = 0;
+
+         while (i < left.size() && j < right.size()) {
+             if (left.get(i).compareTo(right.get(j)) <= 0) {
+                 result.set(k++, left.get(i++));
+             } else {
+                 result.set(k++, right.get(j++));
+             }
+         }
+
+         while (i < left.size()) {
+             result.set(k++, left.get(i++));
+         }
+
+         while (j < right.size()) {
+             result.set(k++, right.get(j++));
          }
      }
  }
