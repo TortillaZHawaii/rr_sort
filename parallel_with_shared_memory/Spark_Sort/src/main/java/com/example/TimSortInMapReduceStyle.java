@@ -69,13 +69,11 @@
 
              insertionSort(sublist);
 
-             // Przypisz posortowaną sublistę z powrotem do oryginalnej listy
              for (int j = i; j < end; j++) {
                  list.set(j, sublist.get(j - i));
              }
          }
 
-         // Usuń sortowanie na końcu całej listy, jeśli to konieczne
          insertionSort(list);
      }
 
